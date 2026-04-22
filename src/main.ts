@@ -1,12 +1,13 @@
-import { Component, Plugin, TFile } from 'obsidian';
+import { Plugin, TFile } from 'obsidian';
 // import {DEFAULT_SETTINGS, MyPluginSettings, SampleSettingTab} from "./settings";
 
 // Remember to rename these classes and interfaces!
 
-const INTERVAL_UPDATE_TITLE_MS = 5000;
+const UPDATE_TITLE_INTERVAL_MS = 2000;
+const UPDATE_TITLE_MIN_DELAY_MS = 150;
 
 export default class PathInTabTitlePlugin extends Plugin {
-	pathInTabTitleComponent: Component;
+	// pathInTabTitleComponent: Component;
 	intervalUpdateTitle: number | null;
 
 	updateTabTitle() {
@@ -27,23 +28,52 @@ export default class PathInTabTitlePlugin extends Plugin {
 
 		const filePathEnd = file.path.split('/').slice(-2).join('/');
 		const filePathEndWithoutExtension = filePathEnd.replace(/\.md$/, '');
-		const tabTitle = filePathEndWithoutExtension.split('/').reverse().join(' | ');
+		const tabTitleParts = filePathEndWithoutExtension.split('/').reverse();
+		const fileName = tabTitleParts[0];
+		const folderName = tabTitleParts[1];
+		let tabTitleHtml = fileName || '';
+		if (folderName) {
+			// tabTitleHtml += ` <small>(${folderName})</small>`;
+			tabTitleHtml += ` <small>| ${folderName}</small>`;
+		}
 
 		// console.error('__TEST__ d9k 200', tabTitleElement);
-		tabTitleElement.innerHTML = tabTitle;
+		tabTitleElement.innerHTML = tabTitleHtml;
+	}
+
+	updateTabTitleDelayed() {
+		window.setTimeout(() => {
+			this.updateTabTitle()
+		}, UPDATE_TITLE_MIN_DELAY_MS)
 	}
 
 	async onload() {
-		this.updateTabTitle();
-		this.pathInTabTitleComponent = new Component();
+		this.updateTabTitleDelayed();
+		// this.pathInTabTitleComponent = new Component();
 		this.intervalUpdateTitle = window.setInterval(
 			() => {
 				this.updateTabTitle()
 			},
-			INTERVAL_UPDATE_TITLE_MS
+			UPDATE_TITLE_INTERVAL_MS
 		);
 
-		this.pathInTabTitleComponent.registerInterval(this.intervalUpdateTitle);
+		this.registerEvent(this.app.workspace.on('layout-change', () => {
+			console.error('__TEST__ d9k 500: workspace layout changed')
+			this.updateTabTitleDelayed();
+		}));
+
+		this.registerEvent(this.app.workspace.on('file-open', () => {
+			this.updateTabTitleDelayed();
+		}));
+
+		this.registerEvent(this.app.workspace.on('window-open', () => {
+			this.updateTabTitleDelayed();
+		}));
+
+
+		this.registerInterval(this.intervalUpdateTitle);
+
+		// this.pathInTabTitleComponent.registerInterval(this.intervalUpdateTitle);
 		// await this.loadSettings();
 
 		// // This creates an icon in the left ribbon.
@@ -111,7 +141,7 @@ export default class PathInTabTitlePlugin extends Plugin {
 		if (this.intervalUpdateTitle) {
 			clearInterval(this.intervalUpdateTitle);
 		}
-		this.pathInTabTitleComponent.unload();
+		// this.pathInTabTitleComponent.unload();
 	}
 
 	// async loadSettings() {
