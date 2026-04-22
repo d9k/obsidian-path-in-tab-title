@@ -56,7 +56,7 @@ var PathInTabTitlePlugin = class extends import_obsidian.Plugin {
     };
   }
   getTabTitleElement() {
-    return document.querySelector(".workspace-tabs.mod-active .workspace-tab-header.is-active .workspace-tab-header-inner-title");
+    return activeDocument.querySelector(".workspace-tabs.mod-active .workspace-tab-header.is-active .workspace-tab-header-inner-title");
   }
   updateTabTitle() {
     let renderInfo = this.getTabTitleRenderInfo();
@@ -69,7 +69,7 @@ var PathInTabTitlePlugin = class extends import_obsidian.Plugin {
       if (tabTitleElement.innerHTML) {
         updateTimeout = 50;
       }
-      setTimeout(() => {
+      activeWindow.setTimeout(() => {
         const renderInfoCurrent = this.getTabTitleRenderInfo();
         const tabTitleElementCurrent = this.getTabTitleElement();
         if (!renderInfoCurrent || !tabTitleElementCurrent) {
@@ -94,13 +94,13 @@ var PathInTabTitlePlugin = class extends import_obsidian.Plugin {
     }
   }
   updateTabTitleDelayed() {
-    window.setTimeout(() => {
+    activeWindow.setTimeout(() => {
       this.updateTabTitle();
     }, UPDATE_TITLE_MIN_DELAY_MS);
   }
   async onload() {
     this.updateTabTitleDelayed();
-    this.intervalUpdateTitle = window.setInterval(
+    this.intervalUpdateTitle = activeWindow.setInterval(
       () => {
         this.updateTabTitle();
       },
@@ -119,7 +119,7 @@ var PathInTabTitlePlugin = class extends import_obsidian.Plugin {
   }
   onunload() {
     if (this.intervalUpdateTitle) {
-      clearInterval(this.intervalUpdateTitle);
+      activeWindow.clearInterval(this.intervalUpdateTitle);
     }
   }
 };
