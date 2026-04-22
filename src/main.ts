@@ -1,13 +1,16 @@
-import {FileSystemAdapter, Plugin, TFile} from 'obsidian';
+import { Component, Plugin, TFile } from 'obsidian';
 // import {DEFAULT_SETTINGS, MyPluginSettings, SampleSettingTab} from "./settings";
 
 // Remember to rename these classes and interfaces!
 
-export default class PathInTabTitlePlugin extends Plugin {
-	// settings: MyPluginSettings;
+const INTERVAL_UPDATE_TITLE_MS = 5000;
 
-	async onload() {
-		const file: TFile|null = this.app.workspace.getActiveFile();
+export default class PathInTabTitlePlugin extends Plugin {
+	pathInTabTitleComponent: Component;
+	intervalUpdateTitle: number | null;
+
+	updateTabTitle() {
+		const file: TFile | null = this.app.workspace.getActiveFile();
 		// const fsa = new FileSystemAdapter();
 		// console.error(fsa.getBasePath());
 
@@ -22,9 +25,25 @@ export default class PathInTabTitlePlugin extends Plugin {
 			return;
 		}
 
-		console.error('__TEST__ d9k 200', tabTitleElement);
-		tabTitleElement.innerHTML = filePath;
+		const filePathEnd = file.path.split('/').slice(-2).join('/');
+		const filePathEndWithoutExtension = filePathEnd.replace(/\.md$/, '');
+		const tabTitle = filePathEndWithoutExtension.split('/').reverse().join(' | ');
 
+		// console.error('__TEST__ d9k 200', tabTitleElement);
+		tabTitleElement.innerHTML = tabTitle;
+	}
+
+	async onload() {
+		this.updateTabTitle();
+		this.pathInTabTitleComponent = new Component();
+		this.intervalUpdateTitle = window.setInterval(
+			() => {
+				this.updateTabTitle()
+			},
+			INTERVAL_UPDATE_TITLE_MS
+		);
+
+		this.pathInTabTitleComponent.registerInterval(this.intervalUpdateTitle);
 		// await this.loadSettings();
 
 		// // This creates an icon in the left ribbon.
@@ -89,6 +108,10 @@ export default class PathInTabTitlePlugin extends Plugin {
 	}
 
 	onunload() {
+		if (this.intervalUpdateTitle) {
+			clearInterval(this.intervalUpdateTitle);
+		}
+		this.pathInTabTitleComponent.unload();
 	}
 
 	// async loadSettings() {
