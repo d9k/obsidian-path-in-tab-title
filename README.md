@@ -4,7 +4,7 @@
 
 ## Installation
 
-Copy over `main.js`, `manifest.json` to your vault into subfolder `.obsidian/plugins/path-in-tab-title/`. Restart Obsidian, enable plugin in settings
+Copy over `main.js`, `manifest.json` to your vault into subfolder `.obsidian/plugins/path-in-tab-title/`. Restart Obsidian, enable plugin in settings (`[Cogwheel button] -> Community plugins -> Installed Plugins`)
 
 ## Styling
 
