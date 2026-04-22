@@ -1,11 +1,10 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
-	"version": "1.0.0",
-	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
-	"isDesktopOnly": false
+	"id": "path-in-tab-title",
+	"name": "Path in tab title",
+	"version": "0.0.1",
+	"minAppVersion": "0.14.3",
+	"description": "",
+	"author": "d9k",
+	"authorUrl": "https://t.me/d9kd9k",
+	"isDesktopOnly": true
 }
