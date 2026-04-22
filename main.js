@@ -47,7 +47,7 @@ var PathInTabTitlePlugin = class extends import_obsidian.Plugin {
     const fileName = tabTitleParts[0];
     const folderName = tabTitleParts[1];
     let newTabTitleHtml = fileName ? `<span>${fileName}</span>` : "";
-    const folderText = `| ${folderName}`;
+    const folderText = ` | ${folderName}`;
     if (folderName) {
       newTabTitleHtml += ` <small>${folderText}</small>`;
     }
@@ -59,7 +59,6 @@ var PathInTabTitlePlugin = class extends import_obsidian.Plugin {
       if (folderName) {
         tabTitleElement.createEl("small", { text: folderText });
       }
-      console.error("__TEST__ d9k 150: tab title updated");
     }
   }
   updateTabTitleDelayed() {

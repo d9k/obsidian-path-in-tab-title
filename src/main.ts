@@ -26,7 +26,7 @@ export default class PathInTabTitlePlugin extends Plugin {
 		const fileName = tabTitleParts[0];
 		const folderName = tabTitleParts[1];
 		let newTabTitleHtml = fileName ? `<span>${fileName}</span>` : '';
-		const folderText = `| ${folderName}`;
+		const folderText = ` | ${folderName}`;
 		if (folderName) {
 			newTabTitleHtml += ` <small>${folderText}</small>`;
 		}
