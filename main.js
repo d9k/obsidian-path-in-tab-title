@@ -46,11 +46,21 @@ var PathInTabTitlePlugin = class extends import_obsidian.Plugin {
     const tabTitleParts = filePathEndWithoutExtension.split("/").reverse();
     const fileName = tabTitleParts[0];
     const folderName = tabTitleParts[1];
-    let tabTitleHtml = fileName || "";
+    let newTabTitleHtml = fileName ? `<span>${fileName}</span>` : "";
+    const folderText = `| ${folderName}`;
     if (folderName) {
-      tabTitleHtml += ` <small>| ${folderName}</small>`;
+      newTabTitleHtml += ` <small>${folderText}</small>`;
     }
-    tabTitleElement.innerHTML = tabTitleHtml;
+    if (tabTitleElement.innerHTML != newTabTitleHtml) {
+      tabTitleElement.innerHTML = "";
+      if (fileName) {
+        tabTitleElement.createSpan({ text: fileName });
+      }
+      if (folderName) {
+        tabTitleElement.createEl("small", { text: folderText });
+      }
+      console.error("__TEST__ d9k 150: tab title updated");
+    }
   }
   updateTabTitleDelayed() {
     window.setTimeout(() => {

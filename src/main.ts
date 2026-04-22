@@ -25,12 +25,25 @@ export default class PathInTabTitlePlugin extends Plugin {
 		const tabTitleParts = filePathEndWithoutExtension.split('/').reverse();
 		const fileName = tabTitleParts[0];
 		const folderName = tabTitleParts[1];
-		let tabTitleHtml = fileName || '';
+		let newTabTitleHtml = fileName ? `<span>${fileName}</span>` : '';
+		const folderText = `| ${folderName}`;
 		if (folderName) {
-			tabTitleHtml += ` <small>| ${folderName}</small>`;
+			newTabTitleHtml += ` <small>${folderText}</small>`;
 		}
 
-		tabTitleElement.innerHTML = tabTitleHtml;
+		if (tabTitleElement.innerHTML != newTabTitleHtml) {
+			// Can't use innerHTML because of Obsidian Plugins Security Guidelines:
+			// https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines#Avoid+%60innerHTML%60%2C+%60outerHTML%60+and+%60insertAdjacentHTML%60
+			// tabTitleElement.innerHTML = newTabTitleHtml;
+			tabTitleElement.innerHTML = "";
+			if (fileName) {
+				tabTitleElement.createSpan({ text: fileName });
+			}
+			if (folderName) {
+				tabTitleElement.createEl('small', { text: folderText });
+			}
+			// console.error('__TEST__ d9k 150: tab title updated')
+		}
 	}
 
 	updateTabTitleDelayed() {
