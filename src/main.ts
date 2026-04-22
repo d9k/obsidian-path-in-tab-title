@@ -49,8 +49,7 @@ export default class PathInTabTitlePlugin extends Plugin {
 		if (tabTitleElement.innerHTML != renderInfo.newTabTitleHtml) {
 			// Can't use innerHTML because of Obsidian Plugins Security Guidelines:
 			// https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines#Avoid+%60innerHTML%60%2C+%60outerHTML%60+and+%60insertAdjacentHTML%60
-			// tabTitleElement.innerHTML = newTabTitleHtml;
-			// let clearInnerHtml = true;
+			// tabTitleElement.innerHTML = renderInfo.newTabTitleHtml;
 			let updateTimeout = 0;
 
 			if (tabTitleElement.innerHTML) {
@@ -94,7 +93,7 @@ export default class PathInTabTitlePlugin extends Plugin {
 		}, UPDATE_TITLE_MIN_DELAY_MS)
 	}
 
-	async onload() {
+ 	onload() {
 		this.updateTabTitleDelayed();
 		this.intervalUpdateTitle = activeWindow.setInterval(
 			() => {
@@ -115,7 +114,6 @@ export default class PathInTabTitlePlugin extends Plugin {
 		this.registerEvent(this.app.workspace.on('window-open', () => {
 			this.updateTabTitleDelayed();
 		}));
-
 
 		this.registerInterval(this.intervalUpdateTitle);
 	}
