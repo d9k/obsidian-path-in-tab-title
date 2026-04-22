@@ -31,15 +31,13 @@ var import_obsidian = require("obsidian");
 var UPDATE_TITLE_INTERVAL_MS = 2e3;
 var UPDATE_TITLE_MIN_DELAY_MS = 150;
 var PathInTabTitlePlugin = class extends import_obsidian.Plugin {
-  updateTabTitle() {
+  getFolderText(folderName) {
+    return ` | ${folderName}`;
+  }
+  getTabTitleRenderInfo() {
     const file = this.app.workspace.getActiveFile();
-    const filePath = file == null ? void 0 : file.path;
-    if (!filePath) {
-      return;
-    }
-    const tabTitleElement = document.querySelector(".workspace-tabs.mod-active .workspace-tab-header.is-active .workspace-tab-header-inner-title");
-    if (!tabTitleElement) {
-      return;
+    if (!file) {
+      return null;
     }
     const filePathEnd = file.path.split("/").slice(-2).join("/");
     const filePathEndWithoutExtension = filePathEnd.replace(/\.md$/, "");
@@ -47,18 +45,52 @@ var PathInTabTitlePlugin = class extends import_obsidian.Plugin {
     const fileName = tabTitleParts[0];
     const folderName = tabTitleParts[1];
     let newTabTitleHtml = fileName ? `<span>${fileName}</span>` : "";
-    const folderText = ` | ${folderName}`;
+    const folderText = folderName ? ` | ${folderName}` : "";
     if (folderName) {
       newTabTitleHtml += ` <small>${folderText}</small>`;
     }
-    if (tabTitleElement.innerHTML != newTabTitleHtml) {
-      tabTitleElement.innerHTML = "";
-      if (fileName) {
-        tabTitleElement.createSpan({ text: fileName });
+    return {
+      folderText,
+      newTabTitleHtml,
+      fileName
+    };
+  }
+  getTabTitleElement() {
+    return document.querySelector(".workspace-tabs.mod-active .workspace-tab-header.is-active .workspace-tab-header-inner-title");
+  }
+  updateTabTitle() {
+    let renderInfo = this.getTabTitleRenderInfo();
+    let tabTitleElement = this.getTabTitleElement();
+    if (!renderInfo || !tabTitleElement) {
+      return;
+    }
+    if (tabTitleElement.innerHTML != renderInfo.newTabTitleHtml) {
+      let updateTimeout = 0;
+      if (tabTitleElement.innerHTML) {
+        updateTimeout = 50;
       }
-      if (folderName) {
-        tabTitleElement.createEl("small", { text: folderText });
-      }
+      setTimeout(() => {
+        const renderInfoCurrent = this.getTabTitleRenderInfo();
+        const tabTitleElementCurrent = this.getTabTitleElement();
+        if (!renderInfoCurrent || !tabTitleElementCurrent) {
+          return;
+        }
+        if (tabTitleElementCurrent.innerHTML) {
+          tabTitleElementCurrent.innerHTML = "";
+        }
+        let renderInfo2 = this.getTabTitleRenderInfo();
+        let tabTitleElement2 = this.getTabTitleElement();
+        if (!renderInfo2 || !tabTitleElement2) {
+          return;
+        }
+        if (renderInfo2.fileName) {
+          tabTitleElement2.createSpan({ text: renderInfo2.fileName });
+        }
+        if (renderInfo2.folderText) {
+          tabTitleElement2.createEl("small", { text: renderInfo2.folderText });
+        }
+        console.error("__TEST__ d9k 150: tab title updated");
+      }, updateTimeout);
     }
   }
   updateTabTitleDelayed() {
