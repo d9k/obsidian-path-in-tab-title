@@ -2,7 +2,7 @@
 	"id": "path-in-tab-title",
 	"name": "Path in tab title",
 	"minAppVersion": "0.9.7",
-	"description": "Show folders names in the tabs titles",
+	"description": "Show folders names in the tabs titles.",
 	"author": "d9k",
 	"authorUrl": "https://t.me/d9kd9k",
 	"isDesktopOnly": true,
