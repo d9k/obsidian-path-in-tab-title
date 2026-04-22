@@ -6,6 +6,12 @@
 
 Copy over `main.js`, `manifest.json` to your vault into subfolder `.obsidian/plugins/path-in-tab-title/`. Restart Obsidian, enable plugin in settings (`[Cogwheel button] -> Community plugins -> Installed Plugins`)
 
+## Known limitations
+
+- There is the delay before updating tab title.
+- Tabs titles are reset to default after the app restart.
+- Only focused tabs titles are changed
+
 ## Styling
 
 Recommended styles:
