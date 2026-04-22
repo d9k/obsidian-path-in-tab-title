@@ -23,4 +23,30 @@ Recommended styles:
 
 ## See also
 
-- [d9k-obsidian-style-guide](https://github.com/d9k/d9k-obsidian-style-guide) 
+- [d9k-obsidian-style-guide](https://github.com/d9k/d9k-obsidian-style-guide)
+
+## Alternative approach
+
+Better to replace this code in `app.js`
+
+```js
+            t.prototype.getDisplayText = function() {
+                return this.file ? this.file.basename : im.interface.noFile()
+            }
+```
+
+with something like
+
+```js
+            t.prototype.getDisplayText = function() {
+    			      // return this.file ? this.file.basename : im.interface.noFile()
+                if (!this.file) {
+                    return im.interface.noFile();
+                }
+
+                return this.file.path.split('/').slice(-2).join('/')
+            }
+```
+
+But I don't know how to patch Electron app :man_shrugging:
+
